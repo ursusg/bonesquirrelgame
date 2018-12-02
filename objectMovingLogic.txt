@@ -1,0 +1,59 @@
+/// STEP EVENT works per input/frame
+
+// Get PLAYER MOVEMENT //
+key_left = keyboard_check(vk_left);
+key_right = keyboard_check(vk_right);
+key_jump = keyboard_check_pressed(vk_space);
+
+// CALCULATE MOVEMENT //
+// Boolean values of [0, 1]
+// This means if you're moving right, you'll move 1-0 aka +1
+// if you're moving left though it'll be 0 - 1 aka -1
+var move = key_right - key_left;
+
+// Here it'll be the value of [0, 1] multiplied by the walkspeed.
+hsp = move * walksp;
+vsp = vsp + grv;
+
+// checks if 1 pixel below the meeting place for the character is the Wall object (aka sets it to true)
+// and checks if the jump key is being pressed
+// if both conditions are true, sets the vertical speed to -10 (aka allows the player to go up)
+// and then gravity (percentage of 3% set in Create) will pull the vertical speed of the player back down.
+if (place_meeting(x, y + 1, oWall1)) and (key_jump) {
+	// Sets the vertical speed to -10 which means it goes up 10 pixels
+	vsp = -8;
+}
+
+
+// x = horiztonal axis
+// y = vertical axis
+// place_meeting as a function has parameters of
+// (x axis, y axis, objectItWillCollideWith)
+// sign() function returns either 1 or -1 depending on whether the value of the value inside is positive or negative
+
+// HORIZONTAL COLLISION //
+if (place_meeting(x+hsp,y,oWall1)){
+	
+	// Checks if the meeting place is at the wall or not
+	while (!place_meeting(x+sign(hsp), y, oWall1)) {
+		// Increases the x coordinate until it reaches the wall. Adding 1 constantly
+		x = x + sign(hsp);	
+	}
+	hsp = 0;
+}
+
+x = x + hsp;
+
+// VERTICAL COLLISION //
+if (place_meeting(x, y + vsp, oWall1)){
+	
+	// Checks if the meeting place is at the wall or not
+	while (!place_meeting(x, y + sign(vsp), oWall1)) {
+		// Increases the x coordinate until it reaches the wall. Adding 1 constantly
+		y = y + sign(vsp);	
+	}
+	
+	vsp = 0;
+}
+
+y = y + vsp;
